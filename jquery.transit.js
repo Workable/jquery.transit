@@ -41,7 +41,7 @@
     enabled: true,
 
     // Set this to false if you don't want to use the transition end property.
-    useTransitionEnd: false
+    useTransitionEnd: true
   };
 
   var div = document.createElement('div');
@@ -282,9 +282,9 @@
     //
     setFromString: function(prop, val) {
       var args =
-        (typeof val === 'string')  ? val.split(',') :
-        (val.constructor === Array) ? val :
-        [ val ];
+            (typeof val === 'string')  ? val.split(',') :
+              (val.constructor === Array) ? val :
+                [ val ];
 
       args.unshift(prop);
 
@@ -464,8 +464,8 @@
       self.queue(queue, fn);
     } else {
       self.each(function () {
-                fn.call(this);
-            });
+        fn.call(this);
+      });
     }
   }
 
@@ -632,7 +632,11 @@
       var bound = false;
 
       // Prepare the callback.
-      var cb = function() {
+      var cb = function (e) {
+        if (e && !$(e.target).is(self)) {
+          return;
+        }
+
         if (bound) { self.unbind(transitionEnd, cb); }
 
         if (i > 0) {
@@ -666,8 +670,8 @@
     // Defer running. This allows the browser to paint any pending CSS it hasn't
     // painted yet before doing the transitions.
     var deferredRun = function(next) {
-        this.offsetWidth; // force a repaint
-        run(next);
+      this.offsetWidth; // force a repaint
+      run(next);
     };
 
     // Use jQuery's fx queue.
@@ -727,7 +731,7 @@
   // toMS('fast') => $.fx.speeds[i] => "200ms"
   // toMS('normal') //=> $.fx.speeds._default => "400ms"
   // toMS(10) //=> '10ms'
-  // toMS('100ms') //=> '100ms'  
+  // toMS('100ms') //=> '100ms'
   //
   function toMS(duration) {
     var i = duration;
